@@ -1,0 +1,496 @@
+# Word Impostor Party Game – Full Project Specification
+
+Build a lightweight multiplayer browser party game inspired by “impostor” social deduction games. The game should be optimized for fast rounds, local friend groups, and easy self-hosting through GitHub Pages.
+
+The entire game should work in-browser on desktop and mobile devices.
+
+---
+
+# CORE GAMEPLAY
+
+The game revolves around a hidden word.
+
+* Most players receive the SAME secret word.
+* One random player is selected as the “Impostor.”
+* The impostor either:
+
+  * receives no word at all,
+  * receives only the THEME of the word,
+  * or receives a vague clue,
+    depending on the game settings.
+
+Players take turns giving short verbal clues out loud in real life while using their phones/computers as controllers/interfaces.
+
+After discussion, everyone votes on who they think the impostor is.
+
+The game is designed for:
+
+* quick rounds,
+* deception,
+* bluffing,
+* social deduction,
+* and replayability.
+
+---
+
+# TECH STACK
+
+Build this as a fully client-side web application.
+
+Recommended:
+
+* React + Vite
+* TailwindCSS for styling
+* Firebase Realtime Database OR Supabase realtime features for multiplayer syncing
+* LocalStorage for saving settings
+* GitHub Pages compatibility
+
+The game must be deployable entirely through GitHub Pages after enabling Pages in repo settings.
+
+Avoid backend servers if possible.
+
+---
+
+# MULTIPLAYER / LOBBY SYSTEM
+
+Players should be able to connect to lobbies over local WiFi or internet.
+
+Requirements:
+
+* One player creates a lobby.
+* Lobby generates:
+
+  * a room code,
+  * and a sharable join link.
+* Other players join by:
+
+  * entering the room code,
+  * or opening the join URL.
+
+All players inside the same WiFi network should experience low-latency syncing.
+
+The host should control:
+
+* starting rounds,
+* changing settings,
+* moving to next round,
+* kicking inactive players.
+
+Lobby should display:
+
+* player list,
+* host indicator,
+* ready indicators,
+* player count,
+* current game state.
+
+Max recommended player count:
+
+* 4–12 players.
+
+---
+
+# GAME FLOW
+
+## 1. Lobby Phase
+
+Players join the room.
+
+Host can configure:
+
+* number of rounds,
+* impostor clue behavior,
+* timers,
+* voting settings,
+* themes/categories.
+
+Players press READY.
+
+Host starts game.
+
+---
+
+## 2. Word Distribution Phase
+
+Each player privately receives:
+
+* the secret word,
+* OR impostor instructions.
+
+The reveal screen should:
+
+* only show one player’s word at a time,
+* include a “hide screen” mode,
+* require tapping “next player” to continue.
+
+This prevents cheating when passing phones around.
+
+---
+
+## 3. Discussion Phase
+
+Players discuss verbally in real life.
+
+Game screen shows:
+
+* countdown timer,
+* current round,
+* alive players,
+* optional discussion prompts.
+
+Optional:
+
+* allow host to skip timer.
+
+---
+
+## 4. Voting Phase
+
+Players vote anonymously for who they think the impostor is.
+
+Requirements:
+
+* prevent voting for yourself,
+* real-time vote submission display,
+* reveal votes simultaneously.
+
+If tied:
+
+* trigger revote,
+  OR
+* randomly eliminate among tied players (setting toggle).
+
+---
+
+## 5. Results Phase
+
+Reveal:
+
+* who the impostor was,
+* the secret word,
+* whether players succeeded.
+
+Scoring:
+
+* Normal players win if impostor is caught.
+* Impostor wins if they survive.
+
+Optional scoring:
+
+* bonus points for fooling everyone,
+* streak tracking,
+* leaderboard.
+
+---
+
+# ROUND SYSTEM
+
+Add a configurable round progression system.
+
+After results:
+
+* all players can vote whether to:
+
+  * continue,
+  * or end game.
+
+If majority votes CONTINUE:
+
+* automatically start next round.
+
+If majority votes END:
+
+* return to final results screen.
+
+Include settings for:
+
+* automatic next rounds,
+* manual host-only progression,
+* best-of system,
+* endless mode.
+
+---
+
+# IMPOSTOR CLUE SETTINGS
+
+Add toggles in settings for how much information the impostor receives.
+
+Modes:
+
+## 1. No Information
+
+Impostor sees:
+“You are the impostor.”
+
+No hints at all.
+
+---
+
+## 2. Theme Only
+
+Impostor sees category only.
+
+Example:
+Theme: Animals
+
+But does NOT see:
+“Elephant”
+
+---
+
+## 3. Vague Hint
+
+Impostor receives a vague clue.
+
+Example:
+Real word: “Elephant”
+Hint shown:
+“Large”
+
+Another example:
+Real word: “Pizza”
+Hint:
+“It’s food.”
+
+Hints should NOT make the answer obvious.
+
+---
+
+# SETTINGS PAGE
+
+Create a polished settings menu.
+
+Settings should include:
+
+## Gameplay
+
+* discussion timer length,
+* voting timer length,
+* number of rounds,
+* endless mode,
+* minimum players,
+* allow spectators,
+* anonymous voting toggle,
+* impostor clue mode,
+* tie behavior.
+
+## UI
+
+* dark mode,
+* sound effects toggle,
+* animations toggle,
+* larger text mode.
+
+## Multiplayer
+
+* public/private lobby,
+* allow reconnect,
+* host transfer,
+* auto-remove inactive players.
+
+Save settings locally.
+
+---
+
+# WORD DATABASE SYSTEM
+
+Create categorized word packs.
+
+Examples:
+
+* Food
+* Animals
+* Movies
+* Jobs
+* Video Games
+* Countries
+* Technology
+* Internet Culture
+
+Each category should contain MANY words.
+
+Structure:
+
+* JSON-based word database.
+* Easy to add custom packs later.
+
+Each word entry can optionally contain:
+
+* category,
+* vague clue,
+* difficulty level.
+
+Example:
+{
+"word": "Elephant",
+"category": "Animals",
+"hint": "Large",
+"difficulty": "easy"
+}
+
+---
+
+# UI / UX DESIGN
+
+Style:
+
+* modern,
+* minimalist,
+* party-game aesthetic,
+* mobile-first.
+
+Design inspiration:
+
+* Jackbox Games
+* Among Us
+* Gartic Phone
+* minimalist card interfaces
+
+Use:
+
+* smooth transitions,
+* animated reveals,
+* large buttons,
+* highly readable typography.
+
+Important:
+
+* should work well in a dim room with friends,
+* should be easy to use while passing phones around.
+
+---
+
+# RESPONSIVE DESIGN
+
+Game must fully support:
+
+* phones,
+* tablets,
+* desktops.
+
+Phone support is the priority.
+
+Landscape and portrait modes should both work.
+
+---
+
+# AUDIO
+
+Add optional sound effects:
+
+* vote cast,
+* timer ticking,
+* round start,
+* reveal animations,
+* victory/defeat sounds.
+
+Include mute toggle.
+
+---
+
+# ANTI-CHEAT / QUALITY OF LIFE
+
+Include:
+
+* reconnect support,
+* duplicate name prevention,
+* inactivity detection,
+* fullscreen mode,
+* hide-screen reveal system,
+* confirmation prompts,
+* reconnect to previous room if page refreshes.
+
+---
+
+# DEPLOYMENT REQUIREMENTS
+
+The repository should:
+
+* be GitHub Pages compatible,
+* include deployment instructions,
+* work after enabling Pages in GitHub settings.
+
+Need:
+
+* README.md
+* setup instructions
+* environment variable instructions if Firebase/Supabase is used
+* production build script
+
+---
+
+# OPTIONAL EXTRA FEATURES
+
+If possible, also add:
+
+* custom word packs,
+* player avatars,
+* emoji reactions,
+* host moderation tools,
+* profanity filter,
+* statistics page,
+* replay history,
+* QR code joining,
+* PWA support for “install app” functionality.
+
+---
+
+# IMPORTANT DESIGN GOALS
+
+The most important aspects of the game are:
+
+* VERY fast rounds,
+* simple onboarding,
+* easy multiplayer joining,
+* strong social interaction,
+* smooth mobile UX,
+* minimal friction,
+* replayability.
+
+Avoid:
+
+* complicated menus,
+* slow matchmaking,
+* unnecessary animations,
+* account systems.
+
+Players should be able to:
+
+1. Open the site
+2. Create a room
+3. Share code
+4. Start playing within 30 seconds.
+
+---
+
+# FILE STRUCTURE SUGGESTION
+
+/src
+/components
+/pages
+/hooks
+/services
+/data
+/styles
+/utils
+
+Include:
+
+* reusable UI components,
+* centralized game state,
+* realtime multiplayer syncing abstraction.
+
+---
+
+# FINAL DELIVERABLE
+
+The final project should include:
+
+* complete playable game,
+* polished UI,
+* multiplayer syncing,
+* settings system,
+* word database,
+* GitHub Pages deployment compatibility,
+* mobile support,
+* and clear setup documentation.

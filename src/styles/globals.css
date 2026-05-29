@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-game-bg text-game-text font-game;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  input, select, textarea {
+    @apply font-game;
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply min-h-screen bg-game-bg p-4 md:p-6;
+  }
+
+  .game-input {
+    @apply w-full bg-black/30 border border-game-border rounded-xl px-4 py-3 text-game-text
+           placeholder-game-muted focus:outline-none focus:border-game-primary transition-colors;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
