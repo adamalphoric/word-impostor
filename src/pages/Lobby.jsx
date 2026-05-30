@@ -220,11 +220,21 @@ export default function Lobby() {
   )
 }
 
+const DISCUSSION_PRESETS = [30, 60, 90, 120, 180]
+const VOTING_PRESETS = [0, 30, 60, 90, 120]
+const ROUND_PRESETS = [1, 3, 5, 7, 10]
+
 function SettingsModal({ isOpen, onClose, roomCode, settings }) {
   const [local, setLocal] = useState(settings)
+  const [customDiscussion, setCustomDiscussion] = useState(!DISCUSSION_PRESETS.includes(settings.discussionTime))
+  const [customVoting, setCustomVoting] = useState(!VOTING_PRESETS.includes(settings.votingTime))
+  const [customRounds, setCustomRounds] = useState(!ROUND_PRESETS.includes(settings.maxRounds) && !settings.endlessMode)
 
   useEffect(() => {
     setLocal(settings)
+    setCustomDiscussion(!DISCUSSION_PRESETS.includes(settings.discussionTime))
+    setCustomVoting(!VOTING_PRESETS.includes(settings.votingTime))
+    setCustomRounds(!ROUND_PRESETS.includes(settings.maxRounds) && !settings.endlessMode)
   }, [settings])
 
   function toggle(key) {
@@ -250,45 +260,90 @@ function SettingsModal({ isOpen, onClose, roomCode, settings }) {
     updateSettings(roomCode, updated)
   }
 
+  const customInputClass = "w-full bg-black/40 border border-game-border rounded-lg px-3 py-2 text-game-text mt-2"
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Game Settings">
       <div className="space-y-5 max-h-[70vh] overflow-y-auto">
         <div>
           <label className="block text-sm text-game-muted mb-1">Discussion time</label>
           <select
-            value={local.discussionTime}
-            onChange={(e) => setNum('discussionTime', Number(e.target.value))}
+            value={customDiscussion ? 'custom' : local.discussionTime}
+            onChange={(e) => {
+              if (e.target.value === 'custom') {
+                setCustomDiscussion(true)
+              } else {
+                setCustomDiscussion(false)
+                setNum('discussionTime', Number(e.target.value))
+              }
+            }}
             className="w-full bg-black/40 border border-game-border rounded-lg px-3 py-2 text-game-text"
           >
-            {[30, 60, 90, 120, 180].map((s) => (
+            {DISCUSSION_PRESETS.map((s) => (
               <option key={s} value={s}>{s} seconds</option>
             ))}
+            <option value="custom">Custom...</option>
           </select>
+          {customDiscussion && (
+            <input
+              type="number"
+              min={10}
+              max={600}
+              value={local.discussionTime}
+              onChange={(e) => { if (Number(e.target.value) >= 10) setNum('discussionTime', Number(e.target.value)) }}
+              className={customInputClass}
+              placeholder="Seconds (10–600)"
+            />
+          )}
         </div>
 
         <div>
           <label className="block text-sm text-game-muted mb-1">Voting time</label>
           <select
-            value={local.votingTime}
-            onChange={(e) => setNum('votingTime', Number(e.target.value))}
+            value={customVoting ? 'custom' : local.votingTime}
+            onChange={(e) => {
+              if (e.target.value === 'custom') {
+                setCustomVoting(true)
+              } else {
+                setCustomVoting(false)
+                setNum('votingTime', Number(e.target.value))
+              }
+            }}
             className="w-full bg-black/40 border border-game-border rounded-lg px-3 py-2 text-game-text"
           >
             <option value={0}>Unlimited</option>
             {[30, 60, 90, 120].map((s) => (
               <option key={s} value={s}>{s} seconds</option>
             ))}
+            <option value="custom">Custom...</option>
           </select>
+          {customVoting && (
+            <input
+              type="number"
+              min={10}
+              max={600}
+              value={local.votingTime}
+              onChange={(e) => { if (Number(e.target.value) >= 10) setNum('votingTime', Number(e.target.value)) }}
+              className={customInputClass}
+              placeholder="Seconds (10–600)"
+            />
+          )}
         </div>
 
         <div>
           <label className="block text-sm text-game-muted mb-1">Number of rounds</label>
           <div className="flex gap-2 flex-wrap">
-            {[1, 3, 5, 7, 10].map((n) => (
+            {ROUND_PRESETS.map((n) => (
               <button
                 key={n}
-                onClick={() => setNum('maxRounds', n)}
+                onClick={() => {
+                  setCustomRounds(false)
+                  const next = { ...local, maxRounds: n, endlessMode: false }
+                  setLocal(next)
+                  updateSettings(roomCode, next)
+                }}
                 className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                  local.maxRounds === n && !local.endlessMode
+                  local.maxRounds === n && !local.endlessMode && !customRounds
                     ? 'bg-game-primary text-white'
                     : 'bg-black/30 text-game-muted hover:text-game-text'
                 }`}
@@ -297,14 +352,43 @@ function SettingsModal({ isOpen, onClose, roomCode, settings }) {
               </button>
             ))}
             <button
-              onClick={() => toggle('endlessMode')}
+              onClick={() => {
+                setCustomRounds(false)
+                const next = { ...local, endlessMode: !local.endlessMode }
+                setLocal(next)
+                updateSettings(roomCode, next)
+              }}
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                 local.endlessMode ? 'bg-game-primary text-white' : 'bg-black/30 text-game-muted hover:text-game-text'
               }`}
             >
               ∞
             </button>
+            <button
+              onClick={() => {
+                setCustomRounds(true)
+                const next = { ...local, endlessMode: false }
+                setLocal(next)
+                updateSettings(roomCode, next)
+              }}
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
+                customRounds ? 'bg-game-primary text-white' : 'bg-black/30 text-game-muted hover:text-game-text'
+              }`}
+            >
+              Custom
+            </button>
           </div>
+          {customRounds && (
+            <input
+              type="number"
+              min={1}
+              max={100}
+              value={local.maxRounds}
+              onChange={(e) => { if (Number(e.target.value) >= 1) setNum('maxRounds', Number(e.target.value)) }}
+              className={customInputClass}
+              placeholder="Rounds (1–100)"
+            />
+          )}
         </div>
 
         <div>
