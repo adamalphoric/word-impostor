@@ -40,6 +40,6 @@ export const DEFAULT_SETTINGS = {
 
 export const MIN_PLAYERS = 3
 export const MAX_PLAYERS = 12
-export const ROOM_CODE_LENGTH = 6
+export const ROOM_CODE_LENGTH = 2
 export const PLAYER_INACTIVITY_TIMEOUT = 30000
 export const ROOM_EXPIRY_HOURS = 4
