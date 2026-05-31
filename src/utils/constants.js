@@ -28,7 +28,7 @@ export const DEFAULT_SETTINGS = {
   impostorMode: IMPOSTOR_MODES.THEME,
   tieBehavior: TIE_BEHAVIORS.REVOTE,
   anonymousVoting: true,
-  selectedCategories: ['food', 'animals', 'jobs', 'technology'],
+  selectedCategories: ['animals', 'sports', 'movies', 'jobs'],
   allowSpectators: false,
   autoNextRound: false,
   minPlayers: 3,
